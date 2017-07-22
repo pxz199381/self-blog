@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    添加页面<br>
+    账号：<input type="text" id="nm"><br>
+    密码：<input type="text" id="wd"><br>
+    权限：<input type="text" id="ad"><br>
+    <input type="button" value="提交" data-id="<%= locals.newId %>" id="sub">
+    <script src="/js/jquery.js"></script>
+    <script>
+        $('#sub').click(function(){
+            $.ajax({
+//                url和域名下的路径对应
+                url: '/admin/user/add',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    nm: $('#nm').val(),
+                    wd: $('#wd').val(),
+                    ad: $('#ad').val(),
+                    id: $(this).attr('data-id')
+                },
+                success(data){
+                    console.log(data);
+                    alert(data.status);
+                    window.location.href = '/admin/user'
+                },
+                error(data){
+                    alert(data.responseText);
+                }
+            })
+        })
+    </script>
+</body>
+</html>

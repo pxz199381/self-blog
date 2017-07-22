@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<!--locals.admin是字符串类型，所以始终不会为空-->
+    状态：<% if(locals.admin){ %>
+    管理员
+    <a href="./admin">去操作</a>
+    <% }else{%>
+    普通用户
+    <%}%>
+    <h1>主界面</h1>
+    <% if(locals.logName){ %>
+    欢迎您!~ <%= locals.logName %><br>
+    <% } else { %>
+    <a href="./register">注册</a>
+    <a href="./login">登录</a>
+    <% } %>
+    <a href="/logout">登出</a><br>
+    <!--引入其他模板-->
+    <!--接收从路由传过来的数据 %= name ;转义html标签 %- name -->
+</body>
+    <script src="js/jquery.js"></script>
+</html>

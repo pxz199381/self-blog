@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+</head>
+<body>
+    <h1>登录界面</h1>
+    <% if(locals.logName) { %>
+        已登录
+    <%  } else { %>
+        <input type="text" id="usname">
+        <input type="text" id="psword">
+        <input type="button" id="sub" value="提交"><br>
+        <a href="register">去注册</a>
+    <% } %>
+    <script src="/js/jquery.js"></script>
+    <script>
+        $('#sub').click(function(){
+            $.ajax({
+                url: '/login',
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    name: $('#usname').val(),
+                    word: $('#psword').val(),
+                },
+                success: function(data){
+                    alert(data.status);
+                    window.location.href = '/';
+                },
+                error: function(data){
+//                    返回的值不是dataType类型就会进入这里
+                    alert(data.responseText);
+                }
+            })
+        })
+    </script>
+</body>
+</html>

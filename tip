@@ -1,0 +1,6 @@
+package install introduce:
+    "express":  node模块化模板
+    "ejs":  模板引擎
+    "body-parser":  接收数据(尤其是post方式)
+    "cookie-parser":    密钥加密
+    "express-session":  保存关键信息

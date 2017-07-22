@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    用户信息
+    <a href="user/add">添加</a><br>
+    <form>
+        <% for(var i in data) { %>
+            <span>
+                用户名：<span class="edit">
+                    <%= data[i]['username'] %>
+                </span>
+                权限：<span class="edit">
+                    <%= data[i]['admin'] %>
+                </span>
+            </span>
+        <!--当前路径指的是路由里的根路径，这里是admin-->
+        <a href="./user/edit?json=<%= JSON.stringify(data[i]) %> " class="edt">修改</a>
+        <a href="/abc" data-sub="<%= data[i]['id']%>" class="del">删除</a><br>
+            <% } %>
+    </form>
+    <!--内部嵌套的js引入前要加上/-->
+    <script src="/js/jquery.js"></script>
+    <script>
+//        删除方法
+        $('.del').each((index,element) => {
+            element.onclick = function(ev){
+                ev.preventDefault();
+                var id = this.getAttribute('data-sub');
+                $.ajax({
+                    url: '/admin/user',
+                    type: 'post',
+                    data: {
+                        dId: id
+                    },
+                    success(data){
+                        alert(data.status);
+                        window.location.href = '/admin/user';
+                    }
+                })
+            }
+//            element.click(function(event){
+////                event.preventDefault();
+//                console.log($(this).attr('data-sub'));
+////                $.ajax({
+////                    url: '/admin/user',
+////                    type: 'post',
+////                    data: {
+////                        dId: $(this).attr('data-sub')
+////                    },
+////                    success(){
+////
+////                    }
+////                })
+//            })
+        })
+    </script>
+</body>
+</html>
