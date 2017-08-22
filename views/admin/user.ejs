@@ -6,45 +6,73 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .container{
+            padding-top: 30px;
+        }
+        .tab-info__operate{
+            width: 350px;
+            text-align: center;
+        }
+        .tab-info__operate a{
+            margin: 0 10px;
+            display: inline-block;
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-    用户信息
-    <a href="user/add">添加</a><br>
-    <form>
-        <% for(var i in data) { %>
-            <span>
-                用户名：<span class="edit">
-                    <%= data[i]['username'] %>
-                </span>
-                权限：<span class="edit">
-                    <%= data[i]['admin'] %>
-                </span>
-            </span>
-        <!--当前路径指的是路由里的根路径，这里是admin-->
-        <a href="./user/edit?json=<%= JSON.stringify(data[i]) %> " class="edt">修改</a>
-        <a href="/abc" data-sub="<%= data[i]['id']%>" class="del">删除</a><br>
+    <div class="container">
+        <a href="/" class="btn btn-primary">返回首页</a>
+        <table class="table table-bordered">
+            <caption>用户信息</caption>
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>用户名</th>
+                <th>昵称</th>
+                <th>权限</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% for(var i in data){%>
+            <tr>
+                <td><%= data[i]['id']%></td>
+                <td><%= data[i]['username']%></td>
+                <td><%= data[i]['nickname']%></td>
+                <td><%= data[i]['admin']%></td>
+                <td class="tab-info__operate">
+                    <a href="/admin/user/edit?json=<%= JSON.stringify(data[i]) %> " class="btn btn-sm btn-success">修改</a>
+                    <a href="/admin/user/delete?id=<%= data[i]['id']%>" class="btn btn-sm btn-info">删除</a>
+                </td>
+            </tr>
             <% } %>
-    </form>
+            </tbody>
+        </table>
+    </div>
     <!--内部嵌套的js引入前要加上/-->
     <script src="/js/jquery.js"></script>
     <script>
 //        删除方法
-        $('.del').each((index,element) => {
-            element.onclick = function(ev){
-                ev.preventDefault();
-                var id = this.getAttribute('data-sub');
-                $.ajax({
-                    url: '/admin/user',
-                    type: 'post',
-                    data: {
-                        dId: id
-                    },
-                    success(data){
-                        alert(data.status);
-                        window.location.href = '/admin/user';
-                    }
-                })
-            }
+//        $('.del').each((index,element) => {
+//            element.onclick = function(ev){
+//                ev.preventDefault();
+//                var id = this.getAttribute('data-sub');
+//                $.ajax({
+//                    url: '/admin/user',
+//                    type: 'post',
+//                    data: {
+//                        dId: id
+//                    },
+//                    success(data){
+//                        alert(data.status);
+//                        window.location.href = '/admin/user';
+//                    }
+//                })
+//            }
 //            element.click(function(event){
 ////                event.preventDefault();
 //                console.log($(this).attr('data-sub'));

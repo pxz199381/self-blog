@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .container{
+            margin-top: 200px;
+        }
+        .clear-input{
+            display: inline-block;
+            padding: 0 10px;
+            height: 36px;
+            font-size: 16px;
+            line-height: 1;
+            color: #777;
+            background: #FCFCFC;
+            border: 1px solid #CCC;
+            border-radius: 3px;
+            width: 250px;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,.05);
+            -webkit-transition: color .2s linear,border-color .3s linear;
+        }
+        .message {
+            line-height: 22px;
+        }
+        .message .user {
+            padding-right: 5px;
+            padding-left: 5px;
+            color: brown;
+        }
+        .sysMsg {
+            color: #c1bfbf;
+            padding-right: 5px;
+            padding-left: 5px;
+            font-size: 12px;
+        }
+        /*会话区域*/
+        .session-msg{
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            width: 500px;
+            height: 350px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+        /*评论区域*/
+        .session-wrapper{
+            background: #f0f0f0;
+            padding-top: 30px;
+        }
+        .session-msg{
+            background: #fff;
+        }
+        .session-comment{
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 14px 20px 14px 80px;
+            border: 1px solid #fff;
+            border-radius: 4px;
+            position: relative
+        }
+        .session-comment__pic{
+            position: absolute;
+            left: 20px;
+            top: 14px;
+        }
+        .session-comment textarea{
+            width: 576px;
+            height: 39px;
+            min-height: 39px;
+            resize: vertical;
+            margin-bottom: 10px;
+            display: block;
+            line-height: 1.5;
+            padding: 5px 10px;
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="panel panel-info col-lg-2">
+            <div class="panel-heading"><%= locals.room %></div>
+            <ul class="list-group">
+                <% if(locals.nickName){%>
+                <li class="list-group-item">昵称:<span id="userName"><%= locals.nickName%></span></li>
+                <% }else{ %>
+                <li class="list-group-item">昵称:<span id="userName"></span></li>
+                <% } %>
+                <li class="list-group-item">在线人数:<span id="olNum">0</span></li>
+                <li class="list-group-item">在线时长:<span id="times"></span></li>
+            </ul>
+        </div>
+        <div class="session-wrapper col-lg-8">
+            <div id="msgArea" class="session-msg"></div>
+            <div class="session-comment">
+                <a href="javascript:;" class="session-comment__pic">
+                    <% if(locals.userPic){%>
+                    <img src="<%= locals.userPic %>" alt="seo" width="50" height="50">
+                    <%}else{%>
+                    <img src="/img/default/userpic.png" alt="seo" width="50" height="50">
+                    <%}%>
+                </a>
+                <textarea name="message" id="msgInput" class="clear-input"
+                          placeholder="按ENTER键发布"></textarea>
+                <div class="clearfix session-comment__btn">
+                    <a href="javascript:;" class="btn btn-warning pull-left" id="isOnline">退出房间</a>
+                    <a href="javascript:;" class="btn btn-danger pull-right" id="subComment">发表言论</a>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-success col-lg-2">
+            <div class="panel-heading">用户列表</div>
+            <ul class="list-group" id="olList"></ul>
+        </div>
+    </div>
+</div>
+<script src="/js/jquery.js"></script>
+<script src="/js/socket.io.js"></script>
+<script>
+    $(function(){
+        var userName = $('#userName').html();
+        var timer = null;
+        while(!$('#userName').text().trim()){
+            userName = prompt('请设置昵称','');
+            $('#userName').text(userName);
+        }
+        if(userName == null){
+            window.location.reload();
+        }
+        var socket = io();
+        //建立socket连接并加入聊天室
+        socket.on('connect',function(){
+            socket.emit('join',userName);
+        })
+        //监听系统消息
+        socket.on('sys',function(sysInfo,userList){
+            $('#msgArea').append(`<div class="sysMsg">${sysInfo}</div>`);
+            $('#olNum').html(userList.length);
+            var lDoms = [];
+            userList.forEach(function(item){
+                lDoms.push(`<li class="list-group-item">${item}</li>`);
+            })
+            $('#olList').html(lDoms);
+        })
+        socket.on('time',function(countFlag){
+            var nTime = 0,nH,nM,nS,sH,sM,sS;
+            if(countFlag){
+                timer = setInterval(function(){
+                    nTime += 1;
+                    nH = Math.floor(nTime/3600);
+                    nM = Math.floor((nTime%3600)/60);
+                    nS = Math.floor((nTime%3600)%60);
+                    switch (true){
+                        case nTime>3600:
+                            $('#times').text(`${nH}小时${nM}分钟${nS}秒`);
+                            break;
+                        case nTime<60:
+                            $('#times').text(`${nS}秒`);
+                            break;
+                        default:
+                            $('#times').text(`${nM}分钟${nS}秒`);
+                    }
+                },1000)
+            }
+        })
+        //接收聊天室信息
+        socket.on('msg',function(user,msg){
+            var message = `
+            <div class="message">
+                <span class="user">${user}</span>
+                <span class="msg">${msg}</span>
+                </div>`;
+            $('#msgArea').append(message);
+            //滚动条始终保持在最新内容的上方
+            $('#msgArea').scrollTop($('#msgArea')[0].scrollHeight);
+        })
+        //离开聊天室
+        $('#isOnline').click(function(){
+            if($(this).text() == '退出房间'){
+                clearInterval(timer);
+                $('#times').text('0');
+                $(this).text('进入房间');
+                socket.emit('leave');
+                var msg = '您已离开聊天室，想继续聊天请点击"进入房间"';
+                $('#msgArea').append(`<div class="sysMsg">${msg}</div>`)
+            }else{
+                $(this).text('退出房间');
+                socket.emit('join',userName);
+            }
+        })
+        //发布会话
+        $('#msgInput').keydown(function(e){
+            if(e.which === 13){
+                e.preventDefault();
+                var msg = $(this).val();
+                $(this).val('');
+                socket.send(msg);
+            }
+        })
+        $('#subComment').click(function(e){
+                e.preventDefault();
+                var msg = $('#msgInput').val();
+                $('#msgInput').val('');
+                socket.send(msg);
+        })
+    })
+</script>
+</body>
+</html>

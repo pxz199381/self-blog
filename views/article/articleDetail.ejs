@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/general.css">
+    <link rel="stylesheet" href="/css/github-markdown.css">
+    <link rel="stylesheet" href="/css/main-layout.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        /*评论区域*/
+        .session-comment{
+            position: relative;
+            width: 765px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            padding: 14px 108px 14px 80px;
+            border: 1px solid #fff;
+            box-shadow: 0px 0px 8px #999;
+            border-radius: 6px;
+            background: rgba(0,0,0,.1);
+        }
+        .session-comment__pic{
+            position: absolute;
+            left: 20px;
+            top: 14px;
+        }
+        .session-comment textarea{
+            width: 576px;
+            height: 50px;
+            min-height: 39px;
+            resize: vertical;
+            margin-bottom: 10px;
+            display: block;
+            line-height: 1.5;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/ueditor.all.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/ueditor/lang/zh-cn/zh-cn.js" ></script>-->
+</head>
+<body>
+    <% include ../layout/header.ejs %>
+
+    <div class="container">
+        <div class="row">
+            <div class="main-wrapper">
+                <div class="main-content">
+                    <artilce class="content-wrapper ">
+                        <div class="markdown-body mb30">
+                            <h1 class="content-title"><%= data[0]['title'] %></h1>
+                            <div><%- data[0]['content'] %></div>
+                            <hr/>
+                        </div>
+                        <div class="panel panel-info">
+                            <div class="panel-heading">最新评论:</div>
+                            <% if(cData.length){%>
+                            <ul class="list-group">
+                                <% for(var i in cData){%>
+                                <li class="list-group-item">
+                                    <span class="text-primary"><%= cData[i]['uid'] %>: </span>
+                                    <span class="text-success"><%= cData[i]['content'] %></span>
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="text-warning">发表于: </span>
+                                    <span class="text-danger"><%= cData[i]['time'] %></span>
+                                </li>
+                                <% } %>
+                            </ul>
+                            <% } %>
+                        </div>
+                    </artilce>
+                    <div class="session-comment">
+                        <a href="javascript:;" class="session-comment__pic">
+                            <% if(locals.userPic){%>
+                            <img src="<%= locals.userPic %>" alt="seo" width="50" height="50">
+                            <%}else{%>
+                            <img src="/img/default/userpic.png" alt="seo" width="50" height="50">
+                            <%}%>
+                        </a>
+                        <textarea id="con" placeholder="发表评论"></textarea>
+                        <div class="clearfix session-comment__btn">
+                            <a href="javascript:;" class="btn btn-danger pull-right" id="sub">发表评论</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% include ../layout/sidebar.ejs %>
+        </div>
+    </div>
+    <!--锚点模板-->
+    <% include ../layout/archor.ejs %>
+    <% include ../layout/footer.ejs %>
+    <!--模态窗模板-->
+    <% include ../layout/modal.ejs %>
+    <!--<script id="editor" type="text/plain" style="width: 500px;height: 300px"></script>-->
+    <script src="/js/canvasTime.js"></script>
+    <script src="/js/smooth-archor.js"></script>
+    <script type="text/javascript">
+//        var ue = UE.getEditor('editor');
+        $('#sub').click(function(){
+            $.ajax({
+                url: '/article/articleDetail/<%= data[0]['id']%>.html',
+                type: 'post',
+                data: {
+                    content: $('#con').val()
+                },
+                success(data){
+                    //模态框处理程序
+                    $('#modal-body__content').html(data.status);
+                    $('#myModal').modal({
+                        keyboard: true
+                    });
+                    //当模态框完全对用户隐藏时触发
+                    $('#myModal').on('hidden.bs.modal', function () {
+                        window.location.href = '/article/articleDetail/<%= data[0]['id']%>.html';
+                    })
+                }
+            })
+        })
+    </script>
+</body>
+</html>

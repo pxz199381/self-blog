@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/general.css">
+    <link rel="stylesheet" href="/css/main-layout.css">
+    <style>
+        /*文章外层*/
+        .article-wrapper{
+            position: relative;
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e6e6e6;
+            border-radius: 3px;
+
+        }
+        .article-wrapper:hover{
+            box-shadow: 0px 0px 8px #999;
+        }
+        /*文章标题*/
+        .article-header__title{
+            font-size: 24px;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+        .article-header__title a{
+            color: #00adef;
+        }
+        .article-header__title a:hover{
+            color: #337ab7;
+        }
+        /*文章属性*/
+        .article-header__meta{
+            color: #a5a5a5;
+            margin-bottom: 10px;
+        }
+        .article-header__meta a{
+            color: #00adef;
+        }
+        .article-header__meta a:hover{
+            color: #337ab7;
+        }
+        .article-header__meta .space{
+            margin: 0 7px;
+            font: inherit;
+        }
+        /*文章评论图标*/
+        /*这里设置opacity伪类才会显示*/
+        .article-header__comment-num{
+            position: absolute;
+            top: 20px;
+            right: 15px;
+            padding: 2px 12px;
+            background: #00adef;
+            color: #fff;
+            opacity: .8;
+        }
+        .article-header__comment-num span{
+            color: #fff;
+        }
+        .article-header__comment-num:after{
+            content: '';
+            position: absolute;
+            z-index: -1;
+            top: 15px;
+            left: 50%;
+            margin-left: -2px;
+            border: 8px dashed transparent;
+            border-left: 8px solid #00adef;
+            border-right-width: 0;
+        }
+        /*摘要和跳转区域*/
+        .article-content__summary{
+            line-height: 30px;
+            margin-bottom: 15px;
+        }
+        .article-content__btn{
+            display: inline-block;
+            background: #ccc;
+            color: #fff;
+            border-color: #ccc;
+            border-radius: 4px;
+            text-align: center;
+            text-decoration: none;
+            margin-right: 10px;
+            padding: 12px 20px;
+            font-size: 13px;
+            line-height: 1;
+        }
+        .article-content__btn:hover{
+            background: #00adef;
+            text-decoration: none;
+            color: #fff;
+        }
+        /*文章分页*/
+        .main-pagination{
+            text-align: center;
+        }
+        .pagination li.active a{
+            color: #fff;
+            background-color: #337ab7;
+            border-color: #fff;
+        }
+        .pagination li a:hover{
+            color: #fff;
+            background-color: #337ab7;
+            border-color: #fff;
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<!--locals.admin是字符串类型，所以始终不会为空-->
+<% include layout/header.ejs %>
+<div class="container">
+    <div class="row">
+        <div class="main-wrapper">
+            <div class="main-content">
+                <% for(var i in docDatas){ %>
+                <article class="article-wrapper">
+                    <div class="article-header">
+                        <h3 class="article-header__title">
+                            <a href="/article/articleDetail/<%= docDatas[i]['id'] %>.html">
+                                <span><%= docDatas[i]['title'] %></span>
+                            </a>
+                        </h3>
+                        <div class="article-header__meta">
+                            <span><%= docDatas[i]['uid']%></span>
+                            <i class="space">•</i>
+                            <span><%= docDatas[i]['time'] %></span>
+                            <i class="space">•</i>
+                            <a href=""><%= docDatas[i]['category'] %></a>
+                            <i class="space">•</i>
+                            <span><%= docDatas[i]['count']%> views</span>
+                            <a href="" class="article-header__comment-num">
+                                <span><%= docComs[i] %></span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="article-content">
+                        <p class="article-content__summary"><%= docDatas[i]['summary']%></p>
+                        <a href="http://localhost:238/article/articleDetail/<%= docDatas[i]['id'] %>.html"
+                           class="article-content__btn">详情</a>
+                        <% if(locals.userAdmin){ %>
+                        <a href="http://localhost:238/article/articleEdit/<%= docDatas[i]['id']%>.html"
+                           class="article-content__btn">编辑</a>
+                        <a href="http://localhost:238/article/articleDelete/<%= docDatas[i]['id'] %>.html"
+                           class="article-content__btn">删除</a>
+                        <% } %>
+                    </div>
+                </article>
+                <% } %>
+                <div class="main-pagination">
+                    <ul class="pagination pagination-lg" id="pageList">
+                        <li class="togglePage"><a href="javascript:;" id="prev" >&laquo;</a></li>
+                        <% for(let i = 0;i<docPages/3;i++){%>
+                        <li class="togglePage">
+                            <a href="./?page=<%= i+1 %>"><%= i+1 %></a>
+                        </li>
+                        <% } %>
+                        <li class="togglePage"><a href="javascript:;" id="next" >&raquo;</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <% include layout/sidebar.ejs %>
+    </div>
+</div>
+<% include layout/footer.ejs %>
+<!--引入其他模板-->
+<!--接收从路由传过来的数据 %= name ;转义html标签 %- name -->
+<script src="/js/jquery.js"></script>
+<script src="/js/marked.min.js"></script>
+<script src="/js/canvasTime.js"></script>
+<script>
+    $(function(){
+        (function(){
+            //获取当前页id
+            var href =  window.location.href;
+            var hArr = href.split('=');
+            var nId = hArr[hArr.length-1];
+            var maxPage = "<%= docPages/3 %>";
+            //判断当前页面url是否包含page
+            if(isNaN(nId)){
+                $('#pageList li:eq(1)').addClass('active');
+                window.location.replace(`http://localhost:238/document/?page=1`);
+            }else{
+                //点击按钮变色
+                $(`#pageList li:eq(${nId})`).addClass('active');
+                //点击按钮切换页面
+                if(nId>1){
+                    $('#prev').click(function(){
+                        window.location.href = `http://localhost:238/document/?page=${nId-1}`;
+                    })
+                }
+                if(nId<maxPage){
+                    $('#next').click(function(){
+                        window.location.href = `http://localhost:238/document/?page=${Number(nId)+1}`;
+                    })
+                }
+            }
+        }())
+    })
+</script>
+</body>
+</html>

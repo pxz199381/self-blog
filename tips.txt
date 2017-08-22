@@ -1,0 +1,23 @@
+富文本编辑器使用方法：
+1:  <script type="text/javascript" charset="utf-8" src="./ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="./ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="./lang/zh-cn/zh-cn.js"> </script>
+
+2:  <script id="editor" type="text/plain" style="width:1024px;height:500px;"></script>
+
+3: <script> var ue = UE.getEditor('editor');    </script>
+
+4: 创建us.js
+
+5: 在工作目录下新建ueditor文件夹，并把原文件除了example全复制过去
+
+6: 该目录下npm安装
+
+7: 修改ue.js引入上目录(要在最后加上/)
+
+8: app.js添加路由
+
+socket使用方法：
+1：引入socket模块
+2：监听已创建的http服务
+3: 在前台进行连接

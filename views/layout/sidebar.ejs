@@ -1,0 +1,76 @@
+<div class="main-sidebar">
+    <aside class="canvasTime mb20 mt20 p20">
+        <canvas id="canvas" style="width: 100%">
+            当前浏览器不支持canvas，请更换浏览器
+        </canvas>
+    </aside>
+    <aside class="aside-wrapper__myself mb20 mt20">
+        <div class="aside-content">
+            <div class="aside-content__header">
+                <h3><a href="#">个人介绍</a></h3>
+            </div>
+            <div class="aside-content__body">
+                <p>目标全栈，兴趣广泛，有想法，能吃苦，敢打拼。
+                    <a href="http://localhost:238/resume.html" target="_blank">详细介绍</a>
+                </p>
+            </div>
+        </div>
+    </aside>
+    <aside class="aside-wrapper__mytag mb20 mt20">
+        <div class="aside-content">
+            <div class="aside-content__header">
+                <h3><a href="#">热门标签</a></h3>
+            </div>
+            <div class="aside-content__body">
+                <ul class="aside-content__list">
+                    <% locals.hotTags.forEach(function(tag){ %>
+                    <li class="aside-content__item">
+                        <a href="http://localhost:238/tag/?tagname=<%= tag[0] %>">
+                            <span><%= tag[0]%></span>
+                            <span class="badge"><%= tag[1]%></span>
+                        </a>
+                    </li>
+                    <% })%>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <aside class="aside-wrapper__newwork mb20 mt20">
+        <div class="aside-content">
+            <div class="aside-content__header">
+                <h3><a href="#">最新随笔</a></h3>
+            </div>
+            <div class="aside-content__body">
+                <ul class="aside-content__list">
+                    <% locals.newEssay.forEach(function(essay){%>
+                    <%  var re = essay[0].split('-') %>
+                    <li class="aside-content__item">
+                        <a href="http://localhost:238/essay/<%= essay[0] %>.html">
+                            <span><%= re[0] %>年<%= re[1] %>月<%= re[2] %>日</span>
+                            <span class="badge"><%= essay[1] %></span>
+                        </a></li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <aside class="aside-wrapper__viewmost mb20 mt20">
+        <div class="aside-content">
+            <div class="aside-content__header">
+                <h3><a href="#">阅读排行</a></h3>
+            </div>
+            <div class="aside-content__body">
+                <ul class="aside-content__list">
+                    <% readingList.forEach(function(item){%>
+                    <li class="aside-content__item">
+                        <a href="http://localhost:238/article/articleDetail/<%= item['id'] %>.html">
+                            <span><%= item['title'] %></span>
+                            <span class="badge"><%= item['count'] %></span>
+                        </a>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+        </div>
+    </aside>
+</div>

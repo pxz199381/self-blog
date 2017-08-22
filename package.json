@@ -1,12 +1,27 @@
 {
-  "name": "node",
+  "name": "blog",
   "version": "0.0.1",
+  "description": "this is my first blog",
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:pxz199381/self-blog.git"
+  },
+  "author": {
+    "name": "azhuang",
+    "email": "17321160846@163.ocm"
+  },
+  "license": "ISC",
   "dependencies": {
-    "express": "latest",
-    "ejs": "latest",
-    "mysql": "latest",
     "body-parser": "latest",
     "cookie-parser": "latest",
-    "express-session": "latest"
+    "ejs": "latest",
+    "express": "latest",
+    "express-session": "latest",
+    "marked": "^0.3.6",
+    "multer": "latest",
+    "mysql": "latest",
+    "q": "^1.5.0",
+    "socket.io": "latest"
   }
 }

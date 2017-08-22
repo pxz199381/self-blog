@@ -6,19 +6,105 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .container{
+            margin-top: 200px;
+        }
+        .container h2{
+            margin: 30px auto;
+        }
+    </style>
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>注册界面</h1>
-    <% if(locals.show) {%>
-    <a href="/login">
-        <%= locals.result %>
-    </a>
-    <% } else { %>
-    <form action="/register" method="post">
-        <input type="text" name="usname">
-        <input type="text" name="psword">
-        <input type="submit">
-    </form>
-    <% }%>
+    <div  class="container">
+        <% if(locals.userEdit){%>
+        <form action="http://localhost:238/admin/user/edit" method="post" class="form-horizontal" enctype="multipart/form-data" id="reg-form">
+            <h2 class="text-center">账号注册</h2>
+            <div class="form-group">
+                <label for="inputMail" class="control-label col-lg-2">账号</label>
+                <div class="col-lg-10">
+                    <input type="text" id="inputMail" placeholder="请输入账号" name="usname"
+                           class="form-control" requried autofocus value="<%= data['username']%>">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword" class="control-label col-lg-2">密码</label>
+                <div class="col-lg-10">
+                    <input type="password" id="inputPassword" placeholder="请输入密码" name="psword"
+                           class="form-control" required autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputnick" class="control-label col-lg-2">昵称</label>
+                <div class="col-lg-10">
+                    <input type="text" id="inputnick" placeholder="请输入昵称" name="nkname"
+                           class="form-control" requried autofocus value="<%= data['username']%>">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputpic" class="control-label col-lg-2">头像</label>
+                <div class="col-lg-10">
+                    <input type="file" id="inputpic" placeholder="请插入头像" name="userpic"
+                           class="form-control" requried autofocus>
+                </div>
+            </div>
+            <input type="hidden" name="uid" value="<%= data['id'] %>">
+            <input type="submit" class="btn btn-primary center-block">
+        </form>
+        <% }else{ %>
+        <form action="/register" method="post" class="form-horizontal" enctype="multipart/form-data" id="reg-form">
+            <h2 class="text-center">账号注册</h2>
+            <div class="form-group">
+                <label for="inputMail" class="control-label col-lg-2">账号</label>
+                <div class="col-lg-10">
+                    <input type="text" id="inputMail" placeholder="请输入账号" name="usname"
+                           class="form-control" requried autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword" class="control-label col-lg-2">密码</label>
+                <div class="col-lg-10">
+                    <input type="password" id="inputPassword" placeholder="请输入密码" name="psword"
+                           class="form-control" required autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputnick" class="control-label col-lg-2">昵称</label>
+                <div class="col-lg-10">
+                    <input type="text" id="inputnick" placeholder="请输入账号" name="nkname"
+                           class="form-control" requried autofocus>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputpic" class="control-label col-lg-2">头像</label>
+                <div class="col-lg-10">
+                    <input type="file" id="inputpic" placeholder="请输入账号" name="userpic"
+                           class="form-control" requried autofocus>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-primary center-block">
+        </form>
+        <% } %>
+    </div>
+    <% include layout/modal.ejs %>
+    <script src="/js/ajaxForm.js"></script>
+    <script>
+        $(function(){
+            $('#reg-form').ajaxForm(function(data){
+                //模态框处理程序
+                $('#modal-body__content').html(data);
+                $('#myModal').modal({
+                    keyboard: true
+                });
+                //当模态框完全对用户隐藏时触发
+                $('#myModal').on('hidden.bs.modal', function () {
+                    window.location.href = '/';
+                })
+            })
+        })
+    </script>
 </body>
 </html>
